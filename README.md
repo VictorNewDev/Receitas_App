@@ -1,6 +1,6 @@
 <<<<<<< HEAD
 # Receitas_App
-App de receitas em flutter
+App de receitas em fluttler que possa marcar as comidas 
 =======
 # flutter_application_receitas
 
