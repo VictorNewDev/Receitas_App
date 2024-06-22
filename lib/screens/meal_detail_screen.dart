@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import '../models/meal.dart';
 
 class MealDetailScreen extends StatelessWidget {
-  const MealDetailScreen({super.key});
+
+
+  final Function(Meal) onToggleFavorite;
+  final bool Function(Meal) isFavorite;
+
+  const MealDetailScreen(this.onToggleFavorite, this.isFavorite);
 
   Widget _createSectionTitle(BuildContext context, String title) {
     return Container(
@@ -55,6 +60,7 @@ class MealDetailScreen extends StatelessWidget {
                 itemCount: meal.ingredients.length,
                 itemBuilder: (ctx, index) {
                   return Card(//card dos ingredientes
+                    color: const Color.fromARGB(255, 88, 240, 93),//card dos ingredientes
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         vertical: 5,
@@ -62,7 +68,6 @@ class MealDetailScreen extends StatelessWidget {
                       ),
                       child: Text(meal.ingredients[index]),
                     ),
-                    color: const Color.fromARGB(255, 88, 240, 93),
                   );
                 },
               ),
@@ -76,9 +81,9 @@ class MealDetailScreen extends StatelessWidget {
                     children: <Widget>[
                       ListTile(
                         leading: CircleAvatar(
+                          backgroundColor: Colors.green,
                           child: 
                           Text('${index + 1}'),
-                          backgroundColor: Colors.green,
                         ),
                         title: Text(meal.steps[index]),
                       ),
@@ -90,6 +95,13 @@ class MealDetailScreen extends StatelessWidget {
             )
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Color.fromARGB(255, 88, 240, 93),
+        child: Icon(isFavorite(meal) ? Icons.favorite : Icons.favorite_border),
+        onPressed: () {
+          onToggleFavorite(meal);
+        },
       ),
     );
   }
