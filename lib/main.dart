@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_receitas/models/auth.dart';
+import 'package:flutter_application_receitas/screens/auth_or_home_page.dart';
+import 'package:flutter_application_receitas/screens/auth_screen.dart';
+import 'package:provider/provider.dart';
 import 'screens/tabs_screen.dart';
 import 'screens/categories_meals_screen.dart';
 import 'screens/meal_detail_screen.dart';
@@ -8,23 +12,22 @@ import 'screens/settings_screen.dart';
 import 'models/meal.dart';
 import 'models/settings.dart';
 import 'data/dummy_data.dart';
- 
+
 void main() => runApp(MyApp());
- 
+
 class MyApp extends StatefulWidget {
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-
   SettingsM settings = SettingsM();
 
   List<Meal> _availableMeals = DUMMY_MEALS;
 
   List<Meal> _favoriteMeals = [];
 
-  void _filterMeals(SettingsM settings) {//filtro da comida
+  void _filterMeals(SettingsM settings) {
     setState(() {
       this.settings = settings;
       
@@ -52,28 +55,38 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'DeliMeals',
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-        fontFamily: 'Raleway',
-        scaffoldBackgroundColor: Color.fromRGBO(255, 254, 229, 1),//altera o background da tela principal para amarelo
-        appBarTheme: AppBarTheme( //aula: tema e estilo
-          color: const Color.fromARGB(255, 88, 240, 93), // Explicitamente definir a cor do AppBar
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => Auth(),
         ),
-        textTheme: ThemeData.light().textTheme.copyWith(
-          titleLarge: const TextStyle(
-            fontSize: 20,
-            fontFamily: 'RobotoCondensed',
+      ],
+      child: MaterialApp(
+        title: 'DeliMeals',
+        theme: ThemeData(
+          primarySwatch: Colors.pink,
+          fontFamily: 'Raleway',
+          scaffoldBackgroundColor: Color.fromRGBO(255, 254, 229, 1),
+          appBarTheme: AppBarTheme(
+            color: const Color.fromARGB(255, 88, 240, 93),
+          ),
+          textTheme: ThemeData.light().textTheme.copyWith(
+            titleLarge: const TextStyle(
+              fontSize: 20,
+              fontFamily: 'RobotoCondensed',
+            ),
           ),
         ),
+        routes: {
+          AppRoutes.AUTH_OR_HOME: (ctx) => AuthOrHomePage(_favoriteMeals),
+          AppRoutes.CATEGORIES_MEALS: (ctx) => CategoriesMealsScreen(_availableMeals),
+          AppRoutes.MEAL_DETAIL: (ctx) => MealDetailScreen(_toggleFavorite, _isFavorite),
+          AppRoutes.SETTINGS: (ctx) => SettingsScreen(settings, _filterMeals),
+        },
       ),
-      routes: {
-        AppRoutes.HOME : (ctx) => TabsScreen(_favoriteMeals),
-        AppRoutes.CATEGORIES_MEALS: (ctx) => CategoriesMealsScreen(_availableMeals),
-        AppRoutes.MEAL_DETAIL: (ctx) => MealDetailScreen(_toggleFavorite, _isFavorite),
-        AppRoutes.SETTINGS: (ctx) => SettingsScreen(settings, _filterMeals),
-      },
     );
   }
 }
+
+
+

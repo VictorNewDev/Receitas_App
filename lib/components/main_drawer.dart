@@ -52,7 +52,7 @@ class MainDrawer extends StatelessWidget {
           _createItem(
             Icons.restaurant,
             'Refeições',
-            () => Navigator.of(context).pushReplacementNamed(AppRoutes.HOME),//Quero navegar para tela home
+            () => Navigator.of(context).pushReplacementNamed(AppRoutes.AUTH_OR_HOME),//Quero navegar para tela home
           ),
           _createItem(
             Icons.settings, 
